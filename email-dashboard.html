@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SEO Performance Report</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f8f9fa;
+            color: #212529;
+            font-size: 14px;
+        }
+        
+        .header {
+            background-color: #343a40;
+            color: white;
+            padding: 8px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            min-height: 48px;
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .menu-icon {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+        
+        .refresh-icon {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+        
+        .header h1 {
+            font-size: 16px;
+            font-weight: 500;
+            margin: 0 20px;
+        }
+        
+        .header-right {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        
+        .header-btn {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 13px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .header-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .nav-container {
+            background: white;
+            border-bottom: 1px solid #dee2e6;
+            padding: 0 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .nav-tabs {
+            display: flex;
+            align-items: center;
+        }
+        
+        .nav-tab {
+            padding: 16px 20px;
+            font-size: 14px;
+            color: #6c757d;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        
+        .nav-tab.active {
+            color: #fff;
+            background: #007bff;
+            border-radius: 4px 4px 0 0;
+            font-weight: 500;
+        }
+        
+        .nav-tab:hover:not(.active) {
+            color: #495057;
+        }
+        
+        .nav-controls {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        
+        .play-btn {
+            background: transparent;
+            color: #28a745;
+            border: none;
+            padding: 8px 16px;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .export-btn {
+            background: #212529;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        
+        .main-content {
+            padding: 20px;
+        }
+        
+        .filters {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .filter-select {
+            background: white;
+            border: 1px solid #ced4da;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            color: #495057;
+        }
+        
+        .section {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 0;
+            margin-bottom: 0;
+        }
+        
+        .section-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid #dee2e6;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #212529;
+            margin: 0;
+        }
+        
+        .error-icon {
+            width: 16px;
+            height: 16px;
+            background: #dc3545;
+            border-radius: 50%;
+            position: relative;
+        }
+        
+        .error-icon::after {
+            content: "!";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 10px;
+            font-weight: bold;
+        }
+        
+        .kpi-container {
+            padding: 24px 20px;
+        }
+        
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0;
+        }
+        
+        .kpi-card {
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            min-height: 120px;
+        }
+        
+        .kpi-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+        
+        .open-rate-icon {
+            background: #007bff;
+            color: white;
+        }
+        
+        .click-rate-icon {
+            background: #28a745;
+            color: white;
+        }
+        
+        .bounce-rate-icon {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .unsubscribe-icon {
+            background: #ffc107;
+            color: #212529;
+        }
+        
+        .total-clicks-icon {
+            background: #6f42c1;
+            color: white;
+        }
+        
+        .delivery-icon {
+            background: #17a2b8;
+            color: white;
+        }
+        
+        .kpi-content {
+            flex: 1;
+        }
+        
+        .kpi-title {
+            font-size: 14px;
+            color: #6c757d;
+            margin-bottom: 6px;
+            font-weight: 400;
+        }
+        
+        .kpi-value {
+            font-size: 32px;
+            font-weight: 300;
+            color: #212529;
+            margin-bottom: 4px;
+            line-height: 1;
+        }
+        
+        .kpi-meta {
+            font-size: 13px;
+            color: #007bff;
+            font-weight: 400;
+        }
+        
+        .insights-section {
+            border-top: 1px solid #dee2e6;
+        }
+        
+        .insights-container {
+            padding: 24px 20px;
+        }
+        
+        .insights-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .insights-list li {
+            padding: 8px 0;
+            font-size: 14px;
+            line-height: 1.5;
+            color: #495057;
+            position: relative;
+            padding-left: 16px;
+        }
+        
+        .insights-list li::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #6c757d;
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 4px;
+            margin-top: 20px;
+            padding: 20px;
+            border-top: 1px solid #dee2e6;
+        }
+        
+        .pagination button {
+            width: 36px;
+            height: 36px;
+            border-radius: 4px;
+            border: 1px solid #ced4da;
+            background: #212529;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+        
+        .restart-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #212529;
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .sidebar-toggle {
+            position: fixed;
+            top: 80px;
+            left: 0;
+            background: #495057;
+            color: white;
+            border: none;
+            padding: 8px;
+            cursor: pointer;
+            font-size: 11px;
+            writing-mode: vertical-lr;
+            text-orientation: mixed;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-left">
+            <div class="menu-icon">☰</div>
+            <div class="refresh-icon">↻</div>
+            <h1>SEO Performance Report</h1>
+        </div>
+        <div class="header-right">
+            <button class="header-btn">
+                <span>👤</span> Log in or create account
+            </button>
+            <button class="header-btn">
+                <span>G</span> Continue with Google
+            </button>
+            <div style="margin-left: 12px;">🎭</div>
+        </div>
+    </div>
+    
+    <div class="nav-container">
+        <div class="nav-tabs">
+            <div class="nav-tab">Executive Summary</div>
+            <div class="nav-tab">Backlink Report</div>
+            <div class="nav-tab">Ranking Report</div>
+            <div class="nav-tab">Google Analytics</div>
+            <div class="nav-tab">Social Media Analytics</div>
+            <div class="nav-tab">Podcast Analytics</div>
+            <div class="nav-tab active">Email Campaigns</div>
+        </div>
+        
+        <div class="nav-controls">
+            <button class="play-btn">▶ Play</button>
+            <button class="export-btn">↗ Export</button>
+        </div>
+    </div>
+    
+    <button class="sidebar-toggle">open sidebar</button>
+    
+    <div class="main-content">
+        <div class="filters">
+            <select class="filter-select">
+                <option>Brands ▼</option>
+            </select>
+            <select class="filter-select">
+                <option>Last 30 Days ▼</option>
+            </select>
+        </div>
+        
+        <div class="section">
+            <div class="section-header">
+                <div class="error-icon"></div>
+                <h2 class="section-title">Overall Overview (Core KPIs)</h2>
+            </div>
+            
+            <div class="kpi-container">
+                <div class="kpi-grid">
+                    <div class="kpi-card">
+                        <div class="kpi-icon open-rate-icon">📧</div>
+                        <div class="kpi-content">
+                            <div class="kpi-title">Open Rate</div>
+                            <div class="kpi-value">24.5%</div>
+                            <div class="kpi-meta">48.5K delivered</div>
+                        </div>
+                    </div>
+                    
+                    <div class="kpi-card">
+                        <div class="kpi-icon click-rate-icon">👆</div>
+                        <div class="kpi-content">
+                            <div class="kpi-title">Click Rate</div>
+                            <div class="kpi-value">3.8%</div>
+                            <div class="kpi-meta">1.8K clicks • 15.5% CTR</div>
+                        </div>
+                    </div>
+                    
+                    <div class="kpi-card">
+                        <div class="kpi-icon bounce-rate-icon">↩</div>
+                        <div class="kpi-content">
+                            <div class="kpi-title">Bounce Rate</div>
+                            <div class="kpi-value">2.1%</div>
+                            <div class="kpi-meta">Undeliverable emails</div>
+                        </div>
+                    </div>
+                    
+                    <div class="kpi-card">
+                        <div class="kpi-icon unsubscribe-icon">❌</div>
+                        <div class="kpi-content">
+                            <div class="kpi-title">Unsubscribe Rate</div>
+                            <div class="kpi-value">0.8%</div>
+                            <div class="kpi-meta">List retention: 99.2%</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="kpi-grid" style="margin-top: 20px;">
+                    <div class="kpi-card">
+                        <div class="kpi-icon total-clicks-icon">🔗</div>
+                        <div class="kpi-content">
+                            <div class="kpi-title">Total Clicks</div>
+                            <div class="kpi-value">2.3K</div>
+                            <div class="kpi-meta">Link engagement</div>
+                        </div>
+                    </div>
+                    
+                    <div class="kpi-card">
+                        <div class="kpi-icon delivery-icon">📊</div>
+                        <div class="kpi-content">
+                            <div class="kpi-title">Delivered vs Attempted</div>
+                            <div class="kpi-value">97.9%</div>
+                            <div class="kpi-meta">48.5K / 49.5K emails</div>
+                        </div>
+                    </div>
+                    
+                    <div class="kpi-card"></div>
+                    <div class="kpi-card"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section insights-section">
+            <div class="section-header">
+                <div class="error-icon"></div>
+                <h2 class="section-title">Insights</h2>
+            </div>
+            
+            <div class="insights-container">
+                <ul class="insights-list">
+                    <li>Email open rate of 24.5% is above industry average, indicating good subject line performance and audience engagement</li>
+                    <li>Click rate of 3.8% shows solid content relevance, with 2.3K total clicks demonstrating active subscriber participation</li>
+                    <li>Low bounce rate of 2.1% indicates healthy email list quality and proper list hygiene practices</li>
+                    <li>Unsubscribe rate of 0.8% is within acceptable range, suggesting content remains valuable to subscribers</li>
+                    <li>High delivery rate of 97.9% shows excellent sender reputation and list quality management</li>
+                </ul>
+                
+                <div class="pagination">
+                    <button>‹</button>
+                    <button>›</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <button class="restart-btn">
+        ↻ Restart R
+    </button>
+</body>
+</html>
